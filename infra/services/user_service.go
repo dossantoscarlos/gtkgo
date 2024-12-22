@@ -16,16 +16,14 @@ func NewUserService() *UserService {
 	return &UserService{userRepo: repository}
 }
 
-func (us *UserService) CreateUserService(name string, email string, password string) (*entities.User, error) {
-	var err error
+func (us *UserService) CreateUserService(name string, email string, password string) (id int, err error) {
 
 	hashPassword, err := helpers.HashPassword(password)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	user := entities.User{
-		ID:       1,
 		Username: name,
 		Email:    email,
 		Password: hashPassword,
@@ -33,15 +31,23 @@ func (us *UserService) CreateUserService(name string, email string, password str
 
 	fmt.Println(user)
 
-	err = us.userRepo.CreateUser(user)
-
+	id, err = us.userRepo.CreateUser(user)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	return &user, nil
+	return id, nil
 }
 
 func (us *UserService) GetAllUsersService() ([]entities.User, error) {
 	return us.userRepo.GetAllUsers()
+}
+
+func (us *UserService) GetOneUserService(id int) (entities.User, error) {
+	user, err := us.userRepo.GetOneUser(id)
+	if err != nil {
+		return entities.User{}, err
+	}
+
+	return user, nil
 }

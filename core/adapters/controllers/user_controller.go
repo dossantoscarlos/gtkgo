@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"gtkgo/core/adapters/dto"
 	"gtkgo/core/domain/entities"
 	"gtkgo/infra/services"
 )
@@ -14,29 +15,44 @@ func NewUserController() *UserController {
 	return &UserController{user_service: user_service}
 }
 
-// HandleCreateUser handles the creation of a new user by first hashing the password
-// and then calling the user service to create the user. It returns the created user
-// entity and an error if any occurs during the process.
-// Parameters:
-//   - name: the name of the user
-//   - email: the email of the user
-//   - pass: the raw password of the user
-//
-// Returns:
-//   - result: the created User entity
-//   - err: an error if the password hashing or user creation fails
-func (uc *UserController) HandleCreateUser(name string, email string, pass string) (result *entities.User, err error) {
+func (uc *UserController) HandleCreateUser(name string, email string, pass string) (userID *dto.UserCreateResponse, err error) {
 	// Chama o use case para criar o usuário
-	result, err = uc.user_service.CreateUserService(name, email, pass)
+	id, err := uc.user_service.CreateUserService(name, email, pass)
 	if err != nil {
 		return nil, err
 	}
+	userID = &dto.UserCreateResponse{ID: int(id)}
 
-	return result, nil
+	return userID, nil
 }
 
 // GetAllUsers retrieves all users from the user service.
 // It returns a slice of User entities and an error, if any occurs.
-func (uc *UserController) GetAllUsers() ([]entities.User, error) {
-	return uc.user_service.GetAllUsersService()
+func (uc *UserController) GetAllUsers() ([]dto.UserDtoResponse, error) {
+
+	var userResponse []dto.UserDtoResponse
+
+	user, err := uc.user_service.GetAllUsersService()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, u := range user {
+		userResponse = append(userResponse, dto.UserDtoResponse{
+			Name:  u.Username,
+			Email: u.Email,
+		})
+	}
+
+	return userResponse, nil
+}
+
+func (uc *UserController) GetOneUser(id int) (entities.User, error) {
+	user, err := uc.user_service.GetOneUserService(id)
+
+	if err != nil {
+		return entities.User{}, err
+	}
+
+	return user, nil
 }

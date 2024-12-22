@@ -3,7 +3,6 @@ package views
 import (
 	"fmt"
 	"gtkgo/core/adapters/controllers"
-	"gtkgo/core/domain/entities"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -84,8 +83,6 @@ func (rg *Register) setSubmitButton() {
 }
 
 func register(rg *Register) {
-	var err error
-	var user *entities.User
 
 	ctrl := controllers.NewUserController()
 	userName := rg.userName.Text
@@ -97,7 +94,7 @@ func register(rg *Register) {
 		return
 	}
 
-	user, err = ctrl.HandleCreateUser(userName, email, password)
+	user, err := ctrl.HandleCreateUser(userName, email, password)
 	if err != nil {
 		dialog.NewError(fmt.Errorf("Erro ao criar usuário: %v", err), rg.window)
 	}

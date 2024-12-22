@@ -10,3 +10,7 @@ type UserDtoResponse struct {
 	Name  string `json:"nome"`
 	Email string `json:"email"`
 }
+
+type UserCreateResponse struct {
+	ID int `json:"id"`
+}

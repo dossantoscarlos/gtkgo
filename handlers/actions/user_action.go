@@ -58,8 +58,6 @@ func UserActionGetAll(ctx *gin.Context) {
 	// Initialize a new UserController instance
 	user := controllers.NewUserController()
 
-	var userResponse []dto.UserDtoResponse
-
 	// Use UserController to fetch all users
 	users, err := user.GetAllUsers()
 	if err != nil {
@@ -69,9 +67,5 @@ func UserActionGetAll(ctx *gin.Context) {
 		return
 	}
 
-	for _, user := range users {
-		userResponse = append(userResponse, dto.UserDtoResponse{Name: user.Username, Email: user.Email})
-	}
-
-	ctx.JSON(http.StatusOK, gin.H{"users": userResponse})
+	ctx.JSON(http.StatusOK, gin.H{"users": users})
 }

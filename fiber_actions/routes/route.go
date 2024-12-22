@@ -12,6 +12,7 @@ func ConfigRouters(f *fiber.App) *fiber.App {
 		users := routers.Group("users")
 		{
 			users.Get("/", actions.UserActionGetAll)
+			users.Get("/show", actions.GetOneUsers)
 		}
 
 		auth := routers.Group("/")
@@ -19,6 +20,7 @@ func ConfigRouters(f *fiber.App) *fiber.App {
 			auth.Post("/register", actions.UserActionCreate)
 			auth.Post("/login", actions.AuthenticationAction)
 		}
+
 	}
 
 	return f

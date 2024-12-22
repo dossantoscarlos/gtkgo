@@ -1,11 +1,13 @@
 package actions
 
 import (
+	"fmt"
 	"gtkgo/core/adapters/controllers"
 	"gtkgo/core/adapters/dto"
 	"gtkgo/helpers"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -59,8 +61,6 @@ func UserActionGetAll(ctx *fiber.Ctx) error {
 	// Initialize a new UserController instance
 	user := controllers.NewUserController()
 
-	var userResponse []dto.UserDtoResponse
-
 	// Use UserController to fetch all users
 	users, err := user.GetAllUsers()
 	if err != nil {
@@ -71,9 +71,31 @@ func UserActionGetAll(ctx *fiber.Ctx) error {
 
 	}
 
-	for _, user := range users {
-		userResponse = append(userResponse, dto.UserDtoResponse{Name: user.Username, Email: user.Email})
+	return ctx.Status(http.StatusOK).JSON(users)
+}
+
+func GetOneUsers(ctx *fiber.Ctx) error {
+	param := ctx.Query("id", "")
+
+	if param == "" {
+		return ctx.Status(http.StatusUnprocessableEntity).JSON(helpers.LogError{Error: "Usuário inválido"})
 	}
 
-	return ctx.Status(http.StatusOK).JSON(userResponse)
+	fmt.Printf("param: %v\n", param)
+
+	user := controllers.NewUserController()
+
+	id, err := strconv.Atoi(param)
+	if err != nil {
+		return ctx.Status(http.StatusUnprocessableEntity).JSON(helpers.LogError{Error: err.Error()})
+	}
+
+	userType, err := user.GetOneUser(id)
+	if err != nil {
+		// Log the error and return HTTP 400 if user creation fails
+		log.Default().Printf("Error ao buscar usuários: %v", err)
+		return ctx.Status(http.StatusUnprocessableEntity).JSON(helpers.LogError{Error: err.Error()})
+	}
+
+	return ctx.Status(http.StatusOK).JSON(userType)
 }
