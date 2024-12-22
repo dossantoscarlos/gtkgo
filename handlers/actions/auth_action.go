@@ -37,5 +37,11 @@ func AuthenticationAction(ctx *gin.Context) {
 	}
 
 	// Return HTTP 200 with success message and created user details
-	ctx.JSON(http.StatusOK, gin.H{"auth": authType})
+	ctx.JSON(http.StatusOK, gin.H{
+		"token": tokenAuthentication(*authType),
+	})
+}
+
+func tokenAuthentication(user dto.AuthDTO) dto.AuthDTO {
+	return user
 }
