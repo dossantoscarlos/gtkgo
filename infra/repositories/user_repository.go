@@ -80,5 +80,8 @@ func (r *UserRepository) GetOneUser(id int) (entities.User, error) {
 	if err != nil {
 		return entities.User{}, err
 	}
+
+	defer r.db.Close()
+
 	return user, nil
 }

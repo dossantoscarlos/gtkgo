@@ -50,5 +50,7 @@ func (r *AuthRepository) Auth(email string, password string) (*entities.User, er
 		return nil, fmt.Errorf("Senha ou email incorretos")
 	}
 
+	defer r.db.Close()
+
 	return &user, nil
 }

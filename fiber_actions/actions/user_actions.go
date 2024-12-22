@@ -3,15 +3,12 @@ package actions
 import (
 	"gtkgo/core/adapters/controllers"
 	"gtkgo/core/adapters/dto"
+	"gtkgo/helpers"
 	"log"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
 )
-
-type logError struct {
-	Error string `json:"error"`
-}
 
 // UserActionCreate handles the HTTP POST request to create a new user.
 // It expects a JSON payload with user details (name, email, password) in the request body.
@@ -27,7 +24,7 @@ func UserActionCreate(ctx *fiber.Ctx) error {
 	// Bind the JSON payload to the UserDTO struct
 	if err := ctx.BodyParser(&userDTO); err != nil {
 		// Return HTTP 400 if payload binding fails
-		return ctx.Status(http.StatusUnprocessableEntity).JSON(logError{Error: err.Error()})
+		return ctx.Status(http.StatusUnprocessableEntity).JSON(helpers.LogError{Error: err.Error()})
 	}
 
 	// Use UserController to handle user creation
@@ -35,7 +32,7 @@ func UserActionCreate(ctx *fiber.Ctx) error {
 	if err != nil {
 		// Log the error and return HTTP 400 if user creation fails
 		log.Default().Printf("Error ao criar usuário: %v", err)
-		return ctx.Status(http.StatusUnprocessableEntity).JSON(logError{Error: err.Error()})
+		return ctx.Status(http.StatusUnprocessableEntity).JSON(helpers.LogError{Error: err.Error()})
 	}
 
 	// Return HTTP 200 with success message and created user details
@@ -70,7 +67,7 @@ func UserActionGetAll(ctx *fiber.Ctx) error {
 		// Log the error and return HTTP 400 if user retrieval fails
 		log.Default().Printf("Error ao buscar usuários: %v", err)
 
-		return ctx.Status(http.StatusUnprocessableEntity).JSON(logError{Error: err.Error()})
+		return ctx.Status(http.StatusUnprocessableEntity).JSON(helpers.LogError{Error: err.Error()})
 
 	}
 
