@@ -3,6 +3,8 @@ package views
 import (
 	"fmt"
 	"gtkgo/core/adapters/controllers"
+	"gtkgo/infra/repositories"
+	"gtkgo/infra/services"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -84,7 +86,7 @@ func (rg *Register) setSubmitButton() {
 
 func register(rg *Register) {
 
-	ctrl := controllers.NewUserController()
+	ctrl := controllers.NewUserController(services.NewUserService(repositories.NewUserRepository()))
 	userName := rg.userName.Text
 	email := rg.emailEntry.Text
 	password := rg.passwordEntry.Text

@@ -3,16 +3,22 @@ package controllers
 import (
 	"gtkgo/core/adapters/dto"
 	"gtkgo/core/domain/entities"
-	"gtkgo/infra/services"
 )
 
-type UserController struct {
-	user_service *services.UserService
+type IUserService interface {
+	GetAllUsersService() ([]entities.User, error)
+	GetOneUserService(id int) (entities.User, error)
+	CreateUserService(name string, email string, password string) (id int, err error)
+	UpdateUserService(id string, user entities.User) (entities.User, error)
+	DeleteUserService(id string) error
 }
 
-func NewUserController() *UserController {
-	user_service := services.NewUserService()
-	return &UserController{user_service: user_service}
+type UserController struct {
+	user_service IUserService
+}
+
+func NewUserController(userService IUserService) *UserController {
+	return &UserController{user_service: userService}
 }
 
 func (uc *UserController) HandleCreateUser(name string, email string, pass string) (userID *dto.UserCreateResponse, err error) {

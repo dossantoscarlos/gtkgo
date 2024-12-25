@@ -5,6 +5,8 @@ import (
 	"gtkgo/core/adapters/controllers"
 	"gtkgo/core/adapters/dto"
 	"gtkgo/helpers"
+	"gtkgo/infra/repositories"
+	"gtkgo/infra/services"
 	"log"
 	"net/http"
 	"strconv"
@@ -21,7 +23,7 @@ func UserActionCreate(ctx *fiber.Ctx) error {
 	var userDTO dto.UserDTO
 
 	// Initialize a new UserController instance
-	user := controllers.NewUserController()
+	user := controllers.NewUserController(services.NewUserService(repositories.NewUserRepository()))
 
 	// Bind the JSON payload to the UserDTO struct
 	if err := ctx.BodyParser(&userDTO); err != nil {
@@ -59,7 +61,7 @@ func UserActionCreate(ctx *fiber.Ctx) error {
 // @Router /users [get]
 func UserActionGetAll(ctx *fiber.Ctx) error {
 	// Initialize a new UserController instance
-	user := controllers.NewUserController()
+	user := controllers.NewUserController(services.NewUserService(repositories.NewUserRepository()))
 
 	// Use UserController to fetch all users
 	users, err := user.GetAllUsers()
@@ -83,7 +85,7 @@ func GetOneUsers(ctx *fiber.Ctx) error {
 
 	fmt.Printf("param: %v\n", param)
 
-	user := controllers.NewUserController()
+	user := controllers.NewUserController(services.NewUserService(repositories.NewUserRepository()))
 
 	id, err := strconv.Atoi(param)
 	if err != nil {

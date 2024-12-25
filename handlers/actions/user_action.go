@@ -3,6 +3,8 @@ package actions
 import (
 	"gtkgo/core/adapters/controllers"
 	"gtkgo/core/adapters/dto"
+	"gtkgo/infra/repositories"
+	"gtkgo/infra/services"
 	"log"
 	"net/http"
 
@@ -18,7 +20,7 @@ func UserActionCreate(ctx *gin.Context) {
 	var userDTO dto.UserDTO
 
 	// Initialize a new UserController instance
-	user := controllers.NewUserController()
+	user := controllers.NewUserController(services.NewUserService(repositories.NewUserRepository()))
 
 	// Bind the JSON payload to the UserDTO struct
 	if err := ctx.ShouldBindJSON(&userDTO); err != nil {
@@ -56,7 +58,7 @@ func UserActionCreate(ctx *gin.Context) {
 // @Router /users [get]
 func UserActionGetAll(ctx *gin.Context) {
 	// Initialize a new UserController instance
-	user := controllers.NewUserController()
+	user := controllers.NewUserController(services.NewUserService(repositories.NewUserRepository()))
 
 	// Use UserController to fetch all users
 	users, err := user.GetAllUsers()
