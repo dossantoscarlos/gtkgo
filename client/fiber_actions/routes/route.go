@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"gtkgo/fiber_actions/actions"
+	"gtkgo/client/fiber_actions/actions"
 
 	"github.com/gofiber/fiber/v2"
 )

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gtkgo/handlers/resolvers"
+	"gtkgo/client/gin_actions/resolvers"
 
 	"github.com/gin-gonic/gin"
 )

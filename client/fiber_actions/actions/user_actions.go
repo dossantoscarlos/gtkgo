@@ -2,8 +2,8 @@ package actions
 
 import (
 	"fmt"
+	"gtkgo/client/dto"
 	"gtkgo/core/adapters/controllers"
-	"gtkgo/dto"
 	"gtkgo/helpers"
 	"gtkgo/infra/repositories"
 	"gtkgo/infra/services"

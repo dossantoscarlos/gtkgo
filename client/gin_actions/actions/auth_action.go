@@ -1,8 +1,8 @@
 package actions
 
 import (
+	"gtkgo/client/dto"
 	"gtkgo/core/adapters/controllers"
-	"gtkgo/dto"
 	"log"
 	"net/http"
 

@@ -1,8 +1,8 @@
 package actions
 
 import (
+	"gtkgo/client/dto"
 	"gtkgo/core/adapters/controllers"
-	"gtkgo/dto"
 	"gtkgo/infra/repositories"
 	"gtkgo/infra/services"
 	"log"
@@ -101,7 +101,8 @@ func GetOneUsers(ctx *gin.Context) {
 
 	id, err := strconv.Atoi(param)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		log.Default().Printf("Error ao buscar usuários: %v", err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Usuário inválido"})
 		return
 	}
 
