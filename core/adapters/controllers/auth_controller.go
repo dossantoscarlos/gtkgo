@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"gtkgo/core/adapters/dto"
+	"gtkgo/core/domain/entities"
 
 	"gtkgo/infra/services"
 )
@@ -15,17 +15,12 @@ func NewAuthController() *AuthController {
 	return &AuthController{auth_service: auth_service}
 }
 
-func (auth *AuthController) Authenticate(name string, password string) (*dto.AuthDTO, error) {
+func (auth *AuthController) Authenticate(name string, password string) (*entities.User, error) {
 
 	user, err := auth.auth_service.AuthenticateService(name, password)
 	if err != nil {
 		return nil, err
 	}
 
-	response := dto.AuthDTO{
-		Email:    user.Email,
-		Username: user.Username,
-	}
-
-	return &response, nil
+	return user, nil
 }

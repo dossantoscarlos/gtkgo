@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"gtkgo/core/adapters/controllers"
 	"gtkgo/core/domain/entities"
-	"log"
 	"os"
-	"reflect"
 	"testing"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -90,12 +88,12 @@ func (suite *MyTestSuite) SetupTest() {
 func (suite *MyTestSuite) TestCreateUser() {
 	controller := controllers.NewUserController(suite.mock)
 
-	data, err := controller.HandleCreateUser("John Doe", "johndoe@example.com", "password123")
+	id, err := controller.HandleCreateUser("John Doe", "johndoe@example.com", "password123")
 
-	fmt.Println(data.ID)
+	fmt.Println(id)
 
 	assert.NoError(suite.T(), err)
-	assert.EqualValues(suite.T(), 1, data.ID)
+	assert.EqualValues(suite.T(), 1, id)
 }
 
 func (suite *MyTestSuite) TestGetOneUser() {
@@ -118,16 +116,6 @@ func (suite *MyTestSuite) TestGetAllUsers() {
 
 	assert.NoError(suite.T(), err)
 	assert.EqualValues(suite.T(), 2, len(users))
-
-	for _, user := range users {
-		entity := reflect.ValueOf(user)
-
-		password := entity.FieldByName("Password")
-		if password.IsValid() {
-			log.Fatalln("password is valid")
-		}
-	}
-
 }
 
 func TestMyTestSuite(t *testing.T) {

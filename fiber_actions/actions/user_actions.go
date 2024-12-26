@@ -3,7 +3,7 @@ package actions
 import (
 	"fmt"
 	"gtkgo/core/adapters/controllers"
-	"gtkgo/core/adapters/dto"
+	"gtkgo/dto"
 	"gtkgo/helpers"
 	"gtkgo/infra/repositories"
 	"gtkgo/infra/services"
@@ -32,17 +32,18 @@ func UserActionCreate(ctx *fiber.Ctx) error {
 	}
 
 	// Use UserController to handle user creation
-	userType, err := user.HandleCreateUser(userDTO.Name, userDTO.Email, userDTO.Password)
+	id, err := user.HandleCreateUser(userDTO.Name, userDTO.Email, userDTO.Password)
 	if err != nil {
 		// Log the error and return HTTP 400 if user creation fails
 		log.Default().Printf("Error ao criar usuário: %v", err)
 		return ctx.Status(http.StatusUnprocessableEntity).JSON(helpers.LogError{Error: err.Error()})
 	}
 
-	// Return HTTP 200 with success message and created user details
-	//ctx.JSON(http.StatusOK, gin.H{"message": "Usuário criado com sucesso", "user": userType})
+	userResponseCreate := dto.UserCreateResponse{
+		ID: id,
+	}
 
-	return ctx.Status(http.StatusOK).JSON(userType)
+	return ctx.Status(http.StatusOK).JSON(userResponseCreate)
 }
 
 // UserActionGetAll handles the HTTP GET request to retrieve all users.
@@ -60,6 +61,8 @@ func UserActionCreate(ctx *fiber.Ctx) error {
 // @Failure 400 {object} map[string]interface{}
 // @Router /users [get]
 func UserActionGetAll(ctx *fiber.Ctx) error {
+	var userDTO []dto.UserDtoResponse
+
 	// Initialize a new UserController instance
 	user := controllers.NewUserController(services.NewUserService(repositories.NewUserRepository()))
 
@@ -73,10 +76,19 @@ func UserActionGetAll(ctx *fiber.Ctx) error {
 
 	}
 
-	return ctx.Status(http.StatusOK).JSON(users)
+	for _, user := range users {
+		userDTO = append(userDTO, dto.UserDtoResponse{
+			Name:  user.Username,
+			Email: user.Email,
+		})
+	}
+
+	return ctx.Status(http.StatusOK).JSON(userDTO)
 }
 
 func GetOneUsers(ctx *fiber.Ctx) error {
+	var userDto dto.UserDtoResponse
+
 	param := ctx.Query("id", "")
 
 	if param == "" {
@@ -98,6 +110,10 @@ func GetOneUsers(ctx *fiber.Ctx) error {
 		log.Default().Printf("Error ao buscar usuários: %v", err)
 		return ctx.Status(http.StatusUnprocessableEntity).JSON(helpers.LogError{Error: err.Error()})
 	}
+	userDto = dto.UserDtoResponse{
+		Name:  userType.Username,
+		Email: userType.Email,
+	}
 
-	return ctx.Status(http.StatusOK).JSON(userType)
+	return ctx.Status(http.StatusOK).JSON(userDto)
 }

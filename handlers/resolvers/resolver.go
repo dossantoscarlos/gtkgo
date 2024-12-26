@@ -12,6 +12,7 @@ func ConfigRouters(g *gin.Engine) *gin.Engine {
 		users := routers.Group("users")
 		{
 			users.GET("/", actions.UserActionGetAll)
+			users.GET("/show", actions.GetOneUsers)
 		}
 
 		auth := routers.Group("/")

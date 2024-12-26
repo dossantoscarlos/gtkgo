@@ -2,7 +2,7 @@ package actions
 
 import (
 	"gtkgo/core/adapters/controllers"
-	"gtkgo/core/adapters/dto"
+	"gtkgo/dto"
 	"gtkgo/helpers"
 	"log"
 	"net/http"
@@ -29,8 +29,13 @@ func AuthenticationAction(ctx *fiber.Ctx) error {
 		return ctx.Status(http.StatusBadRequest).JSON(helpers.LogError{Error: err.Error()})
 	}
 
+	userResponserAuth := dto.AuthDTO{
+		Username: authType.Username,
+		Email:    authType.Email,
+	}
+
 	// Return HTTP 200 with success message and created user details
-	return ctx.Status(http.StatusOK).JSON(map[string]interface{}{"token": tokenAuthentication(*authType)})
+	return ctx.Status(http.StatusOK).JSON(map[string]interface{}{"token": tokenAuthentication(userResponserAuth)})
 }
 
 func tokenAuthentication(user dto.AuthDTO) dto.AuthDTO {

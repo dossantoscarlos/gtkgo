@@ -2,7 +2,7 @@ package actions
 
 import (
 	"gtkgo/core/adapters/controllers"
-	"gtkgo/core/adapters/dto"
+	"gtkgo/dto"
 	"log"
 	"net/http"
 
@@ -36,9 +36,14 @@ func AuthenticationAction(ctx *gin.Context) {
 		return
 	}
 
+	userResponserAuth := dto.AuthDTO{
+		Username: authType.Username,
+		Email:    authType.Email,
+	}
+
 	// Return HTTP 200 with success message and created user details
 	ctx.JSON(http.StatusOK, gin.H{
-		"token": tokenAuthentication(*authType),
+		"token": tokenAuthentication(userResponserAuth),
 	})
 }
 

@@ -2,11 +2,12 @@ package actions
 
 import (
 	"gtkgo/core/adapters/controllers"
-	"gtkgo/core/adapters/dto"
+	"gtkgo/dto"
 	"gtkgo/infra/repositories"
 	"gtkgo/infra/services"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -38,8 +39,12 @@ func UserActionCreate(ctx *gin.Context) {
 		return
 	}
 
+	userResponseCreate := dto.UserCreateResponse{
+		ID: userType,
+	}
+
 	// Return HTTP 200 with success message and created user details
-	ctx.JSON(http.StatusOK, gin.H{"message": "Usuário criado com sucesso", "user": userType})
+	ctx.JSON(http.StatusOK, gin.H{"user": userResponseCreate})
 }
 
 // UserActionGetAll handles the HTTP GET request to retrieve all users.
@@ -57,6 +62,8 @@ func UserActionCreate(ctx *gin.Context) {
 // @Failure 400 {object} map[string]interface{}
 // @Router /users [get]
 func UserActionGetAll(ctx *gin.Context) {
+	var userResponse []dto.UserDtoResponse
+
 	// Initialize a new UserController instance
 	user := controllers.NewUserController(services.NewUserService(repositories.NewUserRepository()))
 
@@ -69,5 +76,46 @@ func UserActionGetAll(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"users": users})
+	for _, user := range users {
+		userResponse = append(userResponse, dto.UserDtoResponse{
+			Name:  user.Username,
+			Email: user.Email,
+		})
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"users": userResponse})
+}
+
+func GetOneUsers(ctx *gin.Context) {
+
+	var userResponse dto.UserDtoResponse
+
+	param := ctx.Query("id")
+
+	if param == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Usuário inválido"})
+		return
+	}
+
+	controllers := controllers.NewUserController(services.NewUserService(repositories.NewUserRepository()))
+
+	id, err := strconv.Atoi(param)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	userType, err := controllers.GetOneUser(id)
+	if err != nil {
+		// Log the error and return HTTP 400 if user creation fails
+		log.Default().Printf("Error ao buscar usuários: %v", err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	userResponse = dto.UserDtoResponse{
+		Name:  userType.Username,
+		Email: userType.Email,
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"user": userResponse})
 }

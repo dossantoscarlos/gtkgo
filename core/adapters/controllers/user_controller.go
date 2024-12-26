@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"gtkgo/core/adapters/dto"
 	"gtkgo/core/domain/entities"
 )
 
@@ -21,36 +20,26 @@ func NewUserController(userService IUserService) *UserController {
 	return &UserController{user_service: userService}
 }
 
-func (uc *UserController) HandleCreateUser(name string, email string, pass string) (userID *dto.UserCreateResponse, err error) {
+func (uc *UserController) HandleCreateUser(name string, email string, pass string) (int, error) {
 	// Chama o use case para criar o usuário
 	id, err := uc.user_service.CreateUserService(name, email, pass)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	userID = &dto.UserCreateResponse{ID: int(id)}
 
-	return userID, nil
+	return id, nil
 }
 
 // GetAllUsers retrieves all users from the user service.
 // It returns a slice of User entities and an error, if any occurs.
-func (uc *UserController) GetAllUsers() ([]dto.UserDtoResponse, error) {
-
-	var userResponse []dto.UserDtoResponse
+func (uc *UserController) GetAllUsers() ([]entities.User, error) {
 
 	user, err := uc.user_service.GetAllUsersService()
 	if err != nil {
 		return nil, err
 	}
 
-	for _, u := range user {
-		userResponse = append(userResponse, dto.UserDtoResponse{
-			Name:  u.Username,
-			Email: u.Email,
-		})
-	}
-
-	return userResponse, nil
+	return user, nil
 }
 
 func (uc *UserController) GetOneUser(id int) (entities.User, error) {
