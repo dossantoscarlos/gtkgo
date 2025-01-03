@@ -78,7 +78,7 @@ func UserActionGetAll(ctx *gin.Context) {
 
 	for _, user := range users {
 		userResponse = append(userResponse, dto.UserDtoResponse{
-			Name:  user.Username,
+			Name:  user.Name,
 			Email: user.Email,
 		})
 	}
@@ -114,7 +114,7 @@ func GetOneUsers(ctx *gin.Context) {
 		return
 	}
 	userResponse = dto.UserDtoResponse{
-		Name:  userType.Username,
+		Name:  userType.Name,
 		Email: userType.Email,
 	}
 

@@ -7,15 +7,14 @@ type UserRepository interface {
 	GetUserById(id int) (entities.User, error)
 	CreateUser(user entities.User) (int, error)
 	UpdateUser(id string, user entities.User) (entities.User, error)
-	DeleteUser(id string) error
+	DeleteUser(id int) error
 }
-
-type UserService interface {
+type IUserService interface {
 	GetAllUsersService() ([]entities.User, error)
 	GetOneUserService(id int) (entities.User, error)
 	CreateUserService(name string, email string, password string) (id int, err error)
 	UpdateUserService(id string, user entities.User) (entities.User, error)
-	DeleteUserService(id string) error
+	DeleteUserService(id int) error
 }
 
 type AuthService interface {

@@ -14,3 +14,8 @@ type UserDtoResponse struct {
 type UserCreateResponse struct {
 	ID int `json:"id"`
 }
+
+type UserIdNameResponse struct {
+	ID   int    `json:"id"`
+	Name string `json:"nome"`
+}

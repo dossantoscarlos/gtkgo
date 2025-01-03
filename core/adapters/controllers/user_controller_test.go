@@ -2,13 +2,9 @@ package controllers_test
 
 import (
 	"database/sql"
-	"fmt"
 	"gtkgo/core/adapters/controllers"
 	"gtkgo/core/domain/entities"
-	"os"
 	"testing"
-
-	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -46,7 +42,7 @@ func (m *MockUserService) UpdateUserService(id string, user entities.User) (enti
 	return args.Get(0).(entities.User), args.Error(1)
 }
 
-func (m *MockUserService) DeleteUserService(id string) error {
+func (m *MockUserService) DeleteUserService(id int) error {
 	args := m.Called(id)
 	return args.Error(0)
 }
@@ -90,8 +86,6 @@ func (suite *MyTestSuite) TestCreateUser() {
 
 	id, err := controller.HandleCreateUser("John Doe", "johndoe@example.com", "password123")
 
-	fmt.Println(id)
-
 	assert.NoError(suite.T(), err)
 	assert.EqualValues(suite.T(), 1, id)
 }
@@ -101,10 +95,8 @@ func (suite *MyTestSuite) TestGetOneUser() {
 
 	user, err := controller.GetOneUser(1)
 
-	fmt.Println(user)
-
 	assert.NoError(suite.T(), err)
-	assert.EqualValues(suite.T(), "John Doe", user.Username)
+	assert.EqualValues(suite.T(), "John Doe", user.Name)
 }
 
 func (suite *MyTestSuite) TestGetAllUsers() {
@@ -112,16 +104,10 @@ func (suite *MyTestSuite) TestGetAllUsers() {
 
 	users, err := controller.GetAllUsers()
 
-	fmt.Println(users)
-
 	assert.NoError(suite.T(), err)
 	assert.EqualValues(suite.T(), 2, len(users))
 }
 
 func TestMyTestSuite(t *testing.T) {
 	suite.Run(t, new(MyTestSuite))
-	arq := "./database.db"
-	if _, err := os.Stat(arq); err == nil {
-		os.Remove(arq)
-	}
 }

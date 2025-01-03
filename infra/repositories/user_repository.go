@@ -101,6 +101,21 @@ func (r *UserRepository) UpdateUser(id string, user entities.User) (entities.Use
 	return user, nil
 }
 
-func (r *UserRepository) DeleteUser(id string) error {
+func (r *UserRepository) DeleteUser(id int) error {
+
+	query := "delete from users where id = ?"
+
+	result, err := r.db.Exec(query, id)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	// Verifica se a execução afetou alguma linha (se o banco foi alterado)
+	if _, err := result.RowsAffected(); err != nil {
+		log.Fatal(err)
+		return err
+	}
+
 	return nil
 }

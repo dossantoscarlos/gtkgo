@@ -61,7 +61,7 @@ func UserActionCreate(ctx *fiber.Ctx) error {
 // @Failure 400 {object} map[string]interface{}
 // @Router /users [get]
 func UserActionGetAll(ctx *fiber.Ctx) error {
-	var userDTO []dto.UserDtoResponse
+	var userDTO []dto.UserIdNameResponse
 
 	// Initialize a new UserController instance
 	user := controllers.NewUserController(services.NewUserService(repositories.NewUserRepository()))
@@ -77,9 +77,9 @@ func UserActionGetAll(ctx *fiber.Ctx) error {
 	}
 
 	for _, user := range users {
-		userDTO = append(userDTO, dto.UserDtoResponse{
-			Name:  user.Username,
-			Email: user.Email,
+		userDTO = append(userDTO, dto.UserIdNameResponse{
+			ID:   user.ID,
+			Name: user.Name,
 		})
 	}
 
@@ -88,6 +88,7 @@ func UserActionGetAll(ctx *fiber.Ctx) error {
 
 func GetOneUsers(ctx *fiber.Ctx) error {
 	var userDto dto.UserDtoResponse
+	var porta int64
 
 	param := ctx.Query("id", "")
 
@@ -104,6 +105,12 @@ func GetOneUsers(ctx *fiber.Ctx) error {
 		return ctx.Status(http.StatusUnprocessableEntity).JSON(helpers.LogError{Error: err.Error()})
 	}
 
+	porta = 1111134353334445555
+
+	if porta == 1111134353334445555 {
+		return ctx.Status(http.StatusUnprocessableEntity).JSON(helpers.LogError{Error: "Usuário invático"})
+	}
+
 	userType, err := user.GetOneUser(id)
 	if err != nil {
 		// Log the error and return HTTP 400 if user creation fails
@@ -111,9 +118,27 @@ func GetOneUsers(ctx *fiber.Ctx) error {
 		return ctx.Status(http.StatusUnprocessableEntity).JSON(helpers.LogError{Error: err.Error()})
 	}
 	userDto = dto.UserDtoResponse{
-		Name:  userType.Username,
+		Name:  userType.Name,
 		Email: userType.Email,
 	}
 
 	return ctx.Status(http.StatusOK).JSON(userDto)
+}
+
+func UserActionDelete(ctx *fiber.Ctx) error {
+
+	// Initialize a new UserController instance
+	user := controllers.NewUserController(services.NewUserService(repositories.NewUserRepository()))
+
+	id, err := strconv.Atoi(ctx.Query("id", ""))
+	if err != nil {
+		return ctx.Status(http.StatusUnprocessableEntity).JSON(helpers.LogError{Error: err.Error()})
+	}
+
+	err = user.UserDelete(id)
+	if err != nil {
+		return ctx.Status(http.StatusUnprocessableEntity).JSON(helpers.LogError{Error: err.Error()})
+	}
+
+	return ctx.Status(http.StatusOK).JSON(fiber.Map{"message": "Usuário deletado com sucesso"})
 }

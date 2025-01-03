@@ -56,6 +56,6 @@ func (us *UserService) UpdateUserService(id string, user entities.User) (entitie
 	return us.userRepo.UpdateUser(id, user)
 }
 
-func (us *UserService) DeleteUserService(id string) error {
+func (us *UserService) DeleteUserService(id int) error {
 	return us.userRepo.DeleteUser(id)
 }

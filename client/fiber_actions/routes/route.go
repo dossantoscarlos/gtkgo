@@ -13,6 +13,7 @@ func ConfigRouters(f *fiber.App) *fiber.App {
 		{
 			users.Get("/", actions.UserActionGetAll)
 			users.Get("/show", actions.GetOneUsers)
+			users.Delete("/delete", actions.UserActionDelete)
 		}
 
 		auth := routers.Group("/")
