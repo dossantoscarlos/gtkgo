@@ -40,12 +40,6 @@ func (r *AuthRepository) Auth(email string, password string) (*entities.User, er
 		return nil, err
 	}
 
-	fmt.Printf("campo: %v\n", user)
-
-	fmt.Printf("campo: %v\n", user.Password)
-
-	fmt.Printf("campo: %v\n", password)
-
 	if !helpers.CheckPasswordHash([]byte(password), user.Password) {
 		return nil, fmt.Errorf("Senha ou email incorretos")
 	}

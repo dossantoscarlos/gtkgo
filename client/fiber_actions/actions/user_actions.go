@@ -14,11 +14,16 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// UserActionCreate handles the HTTP POST request to create a new user.
-// It expects a JSON payload with user details (name, email, password) in the request body.
-// If the payload is valid, it will invoke the UserController to create a user and return
-// a success message with the created user details. If there's an error during user creation,
-// it returns an HTTP 400 status with the error message.
+// @Summary		Show an account
+// @Description	get string by ID
+// @ID				get-string-by-int
+// @Accept			json
+// @Produce		json
+// @Param			id	path		int	true	"Account ID"
+// @Success		200	{object}	model.Account
+// @Failure		400	{object}	http.Response
+// @Failure		404	{object}	http.Response
+// @Router			/accounts/{id} [get]
 func UserActionCreate(ctx *fiber.Ctx) error {
 	var userDTO dto.UserDTO
 
@@ -46,20 +51,14 @@ func UserActionCreate(ctx *fiber.Ctx) error {
 	return ctx.Status(http.StatusOK).JSON(userResponseCreate)
 }
 
-// UserActionGetAll handles the HTTP GET request to retrieve all users.
-// It invokes the UserController to fetch all users and returns an HTTP 200 status
-// with a JSON payload containing the list of users. If there's an error during
-// user retrieval, it logs the error and returns an HTTP 400 status with the error
-// message.
-//
-// @Summary Get all users
-// @Description Retrieve the list of all users
-// @Tags users
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Router /users [get]
+// @Summary		Get all users
+// @Description	Retrieve the list of all users
+// @Tags			users
+// @Accept			json
+// @Produce		json
+// @Success		200	{object}	map[string]interface{}
+// @Failure		400	{object}	map[string]interface{}
+// @Router			/users [get]
 func UserActionGetAll(ctx *fiber.Ctx) error {
 	var userDTO []dto.UserIdNameResponse
 

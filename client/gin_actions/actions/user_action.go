@@ -53,14 +53,14 @@ func UserActionCreate(ctx *gin.Context) {
 // user retrieval, it logs the error and returns an HTTP 400 status with the error
 // message.
 //
-// @Summary Get all users
-// @Description Retrieve the list of all users
-// @Tags users
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Router /users [get]
+//	@Summary		Get all users
+//	@Description	Retrieve the list of all users
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	map[string]interface{}
+//	@Failure		400	{object}	map[string]interface{}
+//	@Router			/users [get]
 func UserActionGetAll(ctx *gin.Context) {
 	var userResponse []dto.UserDtoResponse
 
